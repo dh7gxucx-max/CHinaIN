@@ -111,14 +111,14 @@ export function Navbar() {
             </div>
           ) : (
             <div className="flex gap-2">
-              <a href="/api/login">
+              <Link href="/login">
                 <Button variant="ghost" size="sm">Log in</Button>
-              </a>
-              <a href="/api/login">
+              </Link>
+              <Link href="/register">
                 <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold">
                   Sign Up
                 </Button>
-              </a>
+              </Link>
             </div>
           )}
         </div>
@@ -153,12 +153,12 @@ export function Navbar() {
                     </Button>
                   ) : (
                     <div className="flex flex-col gap-2">
-                      <a href="/api/login" className="w-full">
+                      <Link href="/register" className="w-full">
                         <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">Sign Up</Button>
-                      </a>
-                      <a href="/api/login" className="w-full">
+                      </Link>
+                      <Link href="/login" className="w-full">
                         <Button variant="outline" className="w-full">Log in</Button>
-                      </a>
+                      </Link>
                     </div>
                   )}
                 </div>
