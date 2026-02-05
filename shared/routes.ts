@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { insertParcelSchema, insertProfileSchema, parcels, profiles, stores, sipCalls } from './schema';
+import { insertParcelSchema, insertProfileSchema, parcels, profiles, sipCalls } from './schema';
 
 export const errorSchemas = {
   validation: z.object({
@@ -102,15 +102,6 @@ export const api = {
       },
     },
   },
-  stores: {
-    list: {
-      method: 'GET' as const,
-      path: '/api/stores',
-      responses: {
-        200: z.array(z.custom<typeof stores.$inferSelect>()),
-      },
-    },
-  },
   calculator: {
     calculate: {
       method: 'POST' as const,
@@ -139,6 +130,18 @@ export const api = {
         401: errorSchemas.unauthorized,
       },
     },
+  },
+  ticker: {
+    get: {
+      method: 'GET' as const,
+      path: '/api/ticker',
+      responses: {
+        200: z.object({
+          yuanRate: z.number(),
+          nextFlightDate: z.string(),
+        }),
+      },
+    },
   }
 };
 
@@ -157,4 +160,3 @@ export function buildUrl(path: string, params?: Record<string, string | number>)
 // Type Exports
 export type ProfileResponse = z.infer<typeof api.profiles.get.responses[200]>;
 export type ParcelResponse = z.infer<typeof api.parcels.get.responses[200]>;
-export type StoreResponse = z.infer<typeof api.stores.list.responses[200]>;

@@ -82,7 +82,6 @@ export const sipCalls = pgTable("sip_calls", {
 // Zod Schemas
 export const insertProfileSchema = createInsertSchema(profiles).omit({ id: true, userId: true, updatedAt: true });
 export const insertParcelSchema = createInsertSchema(parcels).omit({ id: true, userId: true, createdAt: true, updatedAt: true, status: true, codAmount: true, isVoiceVerified: true });
-export const insertStoreSchema = createInsertSchema(stores).omit({ id: true });
 export const insertSipCallSchema = createInsertSchema(sipCalls).omit({ id: true, createdAt: true });
 
 // Types
@@ -90,5 +89,4 @@ export type Profile = typeof profiles.$inferSelect;
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
 export type Parcel = typeof parcels.$inferSelect;
 export type InsertParcel = z.infer<typeof insertParcelSchema>;
-export type Store = typeof stores.$inferSelect;
 export type SipCall = typeof sipCalls.$inferSelect;

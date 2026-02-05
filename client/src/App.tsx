@@ -8,8 +8,10 @@ import { SipWidget } from "@/components/SipWidget";
 
 import Home from "@/pages/Home";
 import Dashboard from "@/pages/Dashboard";
-import Stores from "@/pages/Stores";
 import Tracking from "@/pages/Tracking";
+import TermsOfService from "@/pages/TermsOfService";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import RefundPolicy from "@/pages/RefundPolicy";
 import NotFound from "@/pages/not-found";
 import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
@@ -40,7 +42,9 @@ function Router() {
       <main>
         <Switch>
           <Route path="/" component={Home} />
-          <Route path="/stores" component={Stores} />
+          <Route path="/terms" component={TermsOfService} />
+          <Route path="/privacy" component={PrivacyPolicy} />
+          <Route path="/refund" component={RefundPolicy} />
           
           {/* Protected Routes */}
           <Route path="/dashboard">

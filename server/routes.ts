@@ -118,28 +118,38 @@ export async function registerRoutes(
     res.json({ success: true, message: "Voice verification completed successfully." });
   });
 
-  // --- Stores ---
-  app.get(api.stores.list.path, async (req, res) => {
-    const stores = await storage.getStores();
-    res.json(stores);
+  // --- Ticker ---
+  app.get(api.ticker.get.path, (req, res) => {
+    const today = new Date();
+    const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+    
+    // Simple deterministic random based on date
+    const yuanRate = (11.5 + (seed % 100) / 100).toFixed(2);
+    
+    // Next flight date (e.g., every 3 days)
+    const flightDate = new Date(today);
+    flightDate.setDate(today.getDate() + (3 - (today.getDate() % 3)));
+    
+    res.json({
+      yuanRate: parseFloat(yuanRate),
+      nextFlightDate: flightDate.toLocaleDateString('ru-RU'),
+    });
   });
 
   // --- Calculator ---
   app.post(api.calculator.calculate.path, (req, res) => {
     const { weight } = req.body;
-    const freightRate = 800; // ₹800 per kg
-    const customsRate = 0.10; // 10%
-    const commission = 500; // Flat fee
-
-    const freight = weight * freightRate;
-    const customs = freight * customsRate;
-    const total = freight + customs + commission;
+    const ratePerKgUsd = 15;
+    const usdToInr = 83; // Example conversion
+    
+    const costUsd = weight * ratePerKgUsd;
+    const totalInr = costUsd * usdToInr;
 
     res.json({
-      freight: Math.round(freight),
-      customs: Math.round(customs),
-      commission,
-      total: Math.round(total)
+      freight: Math.round(totalInr),
+      customs: 0,
+      commission: 0,
+      total: Math.round(totalInr)
     });
   });
 
