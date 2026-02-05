@@ -88,25 +88,23 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="p-4 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
-              <div className="flex justify-between items-start">
-                <div className="space-y-1 text-sm">
-                  <p className="flex items-center gap-2">
-                    <span className="text-blue-200">Имя получателя:</span>
-                    <span className="text-white font-semibold">{mockProfile?.receiverName || `DP一八()`}</span>
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <span className="text-blue-200">Телефон:</span>
-                    <span className="text-white font-semibold">{mockProfile?.phone || "13136947557"}</span>
-                  </p>
-                  <p className="flex items-start gap-2">
-                    <span className="text-blue-200 flex-shrink-0">Адрес:</span>
-                    <span className="text-white font-semibold">{mockProfile?.chineseAddress || "黑龙江省鸡西市鸡冠区东太三组义立国际圣邮库一八111118"}</span>
-                  </p>
+              <div className="flex justify-between items-start gap-3">
+                <div className="space-y-2 text-sm flex-1">
+                  <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
+                    <span className="text-blue-200/70">Name:</span>
+                    <span className="text-white font-medium">{mockProfile?.receiverName || `DP一八()`}</span>
+
+                    <span className="text-blue-200/70">Phone:</span>
+                    <span className="text-white font-medium">{mockProfile?.phone || "13136947557"}</span>
+
+                    <span className="text-blue-200/70">Address:</span>
+                    <span className="text-white font-medium break-all">{mockProfile?.chineseAddress || "黑龙江省鸡西市鸡冠区东太三组义立国际圣邮库一八111118"}</span>
+                  </div>
                 </div>
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="text-white hover:bg-white/20 flex-shrink-0"
+                  className="text-white hover:bg-white/20 flex-shrink-0 mt-1"
                   onClick={() => copyToClipboard(`${mockProfile?.receiverName}\n${mockProfile?.phone}\n${mockProfile?.chineseAddress}`)}
                 >
                   <Copy className="h-4 w-4" />
