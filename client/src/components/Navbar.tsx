@@ -13,14 +13,31 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu, Package, LayoutDashboard, ShoppingBag, LogOut, User } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { getTickerData } from "@/lib/ticker";
 
 export function Navbar() {
   const { user, logout, isAuthenticated } = useAuth();
   const [location] = useLocation();
+  const [tickerData, setTickerData] = useState(() => getTickerData());
+
+  useEffect(() => {
+    // Update ticker data on mount and check daily
+    const data = getTickerData();
+    setTickerData(data);
+
+    // Check for updates every hour
+    const interval = setInterval(() => {
+      const newData = getTickerData();
+      setTickerData(newData);
+    }, 3600000); // 1 hour
+
+    return () => clearInterval(interval);
+  }, []);
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/stores", label: "Stores" },
+    { href: "/calculator", label: "Calculator" },
     { href: "/pricing", label: "Pricing" },
     { href: "/support", label: "Support" },
   ];
@@ -153,17 +170,17 @@ export function Navbar() {
       
       {/* Ticker Tape */}
       <div className="bg-primary text-primary-foreground py-1 overflow-hidden">
-        <motion.div 
+        <motion.div
           className="whitespace-nowrap text-xs font-mono flex items-center gap-8"
           animate={{ x: [0, -1000] }}
           transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
         >
-          <span>EXCHANGE RATE: 1 CNY = 11.5 INR</span>
-          <span>SHIPPING: AIR CARGO ₹850/KG</span>
-          <span>NEXT FLIGHT: FRIDAY 23:00</span>
-          <span>EXCHANGE RATE: 1 CNY = 11.5 INR</span>
-          <span>SHIPPING: AIR CARGO ₹850/KG</span>
-          <span>NEXT FLIGHT: FRIDAY 23:00</span>
+          <span>EXCHANGE RATE: 1 CNY = {tickerData.exchangeRate} INR</span>
+          <span>SHIPPING: AIR CARGO $15/KG</span>
+          <span>NEXT FLIGHT: {tickerData.nextFlightDay} 23:00</span>
+          <span>EXCHANGE RATE: 1 CNY = {tickerData.exchangeRate} INR</span>
+          <span>SHIPPING: AIR CARGO $15/KG</span>
+          <span>NEXT FLIGHT: {tickerData.nextFlightDay} 23:00</span>
         </motion.div>
       </div>
     </header>

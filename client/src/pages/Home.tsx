@@ -1,9 +1,8 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Calculator } from "@/components/Calculator";
 import { motion } from "framer-motion";
-import { ArrowRight, Box, ShieldCheck, Truck, Headphones, Package } from "lucide-react";
+import { ArrowRight, Box, ShieldCheck, Truck, Headphones, Package, Calculator as CalcIcon } from "lucide-react";
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
@@ -19,46 +18,81 @@ export default function Home() {
           </svg>
         </div>
         
-        <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+        <div className="container relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-white space-y-6"
+            className="text-white space-y-8 text-center max-w-4xl mx-auto"
           >
-            <div className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent backdrop-blur-sm">
-              <span className="flex h-2 w-2 rounded-full bg-accent mr-2"></span>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-4 py-2 text-sm text-accent backdrop-blur-sm"
+            >
+              <motion.span
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="flex h-2 w-2 rounded-full bg-accent mr-2"
+              ></motion.span>
               Fastest route to India
-            </div>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-extrabold leading-tight">
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="text-5xl md:text-6xl lg:text-7xl font-display font-extrabold leading-tight"
+            >
               Sourcing from China, <br />
-              <span className="text-accent">Made Simple.</span>
-            </h1>
-            <p className="text-xl text-blue-100 max-w-lg leading-relaxed">
-              We handle procurement, quality checks, customs clearance, and last-mile delivery. 
+              <motion.span
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.7, delay: 0.4 }}
+                className="text-accent"
+              >
+                Made Simple.
+              </motion.span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.5 }}
+              className="text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed"
+            >
+              We handle procurement, quality checks, customs clearance, and last-mile delivery.
               Zero headaches, full transparency.
-            </p>
-            <div className="flex flex-wrap gap-4 pt-4">
-              <a href={isAuthenticated ? "/dashboard" : "/api/login"}>
-                <Button size="lg" className="h-12 px-8 text-base bg-accent hover:bg-accent/90 text-accent-foreground font-bold">
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.6 }}
+              className="flex flex-wrap gap-4 pt-4 justify-center"
+            >
+              <motion.a
+                href={isAuthenticated ? "/dashboard" : "/api/login"}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button size="lg" className="h-14 px-10 text-base bg-accent hover:bg-accent/90 text-accent-foreground font-bold shadow-xl">
                   Start Shipping Now
                 </Button>
-              </a>
-              <Link href="/stores">
-                <Button size="lg" variant="outline" className="h-12 px-8 text-base bg-transparent border-white/20 text-white hover:bg-white/10">
-                  Browse Stores
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex justify-center lg:justify-end"
-          >
-            <Calculator />
+              </motion.a>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Link href="/calculator">
+                  <Button size="lg" variant="outline" className="h-14 px-10 text-base bg-transparent border-white/20 text-white hover:bg-white/10 shadow-xl">
+                    <CalcIcon className="mr-2 h-5 w-5" />
+                    Calculate Shipping
+                  </Button>
+                </Link>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -170,7 +204,7 @@ export default function Home() {
           <div>
             <h4 className="font-bold mb-4 text-accent">Quick Links</h4>
             <ul className="space-y-2 text-sm text-blue-200">
-              <li><Link href="/stores" className="hover:text-white">Store Directory</Link></li>
+              <li><Link href="/calculator" className="hover:text-white">Shipping Calculator</Link></li>
               <li><Link href="/pricing" className="hover:text-white">Shipping Rates</Link></li>
               <li><Link href="/tracking" className="hover:text-white">Track Parcel</Link></li>
             </ul>

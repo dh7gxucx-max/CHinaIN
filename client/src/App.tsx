@@ -4,9 +4,9 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navbar } from "@/components/Navbar";
-import { SipWidget } from "@/components/SipWidget";
 
 import Home from "@/pages/Home";
+import Calculator from "@/pages/Calculator";
 import Dashboard from "@/pages/Dashboard";
 import Tracking from "@/pages/Tracking";
 import TermsOfService from "@/pages/TermsOfService";
@@ -42,6 +42,7 @@ function Router() {
       <main>
         <Switch>
           <Route path="/" component={Home} />
+          <Route path="/calculator" component={Calculator} />
           <Route path="/terms" component={TermsOfService} />
           <Route path="/privacy" component={PrivacyPolicy} />
           <Route path="/refund" component={RefundPolicy} />
@@ -57,7 +58,6 @@ function Router() {
           <Route component={NotFound} />
         </Switch>
       </main>
-      <SipWidget />
     </div>
   );
 }
