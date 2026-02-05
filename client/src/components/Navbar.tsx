@@ -69,7 +69,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between py-2">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-display font-bold text-xl tracking-tight text-primary">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -88,21 +88,21 @@ export function Navbar() {
         </nav>
 
         {/* Auth Buttons / Profile */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
           {hasActiveSession ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               {/* User Name Display */}
               {displayUser && (
-                <div className="text-sm">
+                <div className="text-sm flex items-center">
                   <span className="text-muted-foreground">Welcome, </span>
-                  <span className="font-semibold text-primary">
+                  <span className="font-semibold text-primary ml-1">
                     {displayUser.firstName}
                   </span>
                 </div>
               )}
 
               <Link href="/dashboard">
-                <Button variant={location === "/dashboard" ? "secondary" : "ghost"} size="sm">
+                <Button variant={location === "/dashboard" ? "secondary" : "ghost"} size="sm" className="h-9">
                   Dashboard
                 </Button>
               </Link>
