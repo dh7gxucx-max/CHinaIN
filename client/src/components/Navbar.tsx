@@ -22,23 +22,21 @@ export function Navbar() {
   const [tickerData, setTickerData] = useState(() => getTickerData());
   const [demoUser, setDemoUser] = useState<any>(null);
 
-  // Get demo user from localStorage if not authenticated
-  const getDemoUser = () => {
-    if (user) return user;
-    try {
-      const stored = localStorage.getItem('demoUser');
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  };
-
   // Update demo user on mount and when location changes
   useEffect(() => {
-    setDemoUser(getDemoUser());
+    if (user) {
+      setDemoUser(user);
+    } else {
+      try {
+        const stored = localStorage.getItem('demoUser');
+        setDemoUser(stored ? JSON.parse(stored) : null);
+      } catch {
+        setDemoUser(null);
+      }
+    }
   }, [user, location]);
 
-  const displayUser = user || demoUser;
+  const displayUser = demoUser;
 
   useEffect(() => {
     // Update ticker data on mount and check daily

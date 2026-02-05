@@ -22,9 +22,36 @@ export default function Login() {
     // Simulate login process
     setTimeout(() => {
       if (email && password) {
+        // Save demo user data to localStorage
+        const existingUser = localStorage.getItem('demoUser');
+        let demoUser;
+
+        if (existingUser) {
+          // User exists, load their data
+          try {
+            demoUser = JSON.parse(existingUser);
+          } catch (e) {
+            // If parsing fails, create new user
+            demoUser = {
+              firstName: email.split('@')[0],
+              email: email,
+              id: `user-${Date.now()}`,
+            };
+          }
+        } else {
+          // New user, create account
+          demoUser = {
+            firstName: email.split('@')[0],
+            email: email,
+            id: `user-${Date.now()}`,
+          };
+        }
+
+        localStorage.setItem('demoUser', JSON.stringify(demoUser));
+
         toast({
           title: "Login Successful!",
-          description: "Welcome back to China2India",
+          description: `Welcome back, ${demoUser.firstName}!`,
         });
         // First trigger mock login, then redirect to dashboard
         fetch("/api/login", { method: "GET" })
