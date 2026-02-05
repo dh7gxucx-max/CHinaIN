@@ -3,7 +3,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useParcels, useCreateParcel } from "@/hooks/use-parcels";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, Plus, Package, MapPin, TrendingUp, AlertCircle, Loader2 } from "lucide-react";
+import { Copy, Plus, Package, MapPin, TrendingUp, AlertCircle, Loader2, HelpCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,15 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
+import { ErrorState } from "@/components/ErrorState";
+import { EmptyParcelsState } from "@/components/dashboard/EmptyParcelsState";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Schema definition (moved from deleted schema file)
 const createParcelFormSchema = z.object({
@@ -30,10 +39,11 @@ type CreateParcelForm = z.infer<typeof createParcelFormSchema>;
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { data: profile, isLoading: isProfileLoading } = useProfile();
-  const { data: parcels, isLoading: isParcelsLoading } = useParcels();
+  const { data: profile, isLoading: isProfileLoading, error: profileError } = useProfile();
+  const { data: parcels, isLoading: isParcelsLoading, error: parcelsError, refetch: refetchParcels } = useParcels();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [addParcelOpen, setAddParcelOpen] = useState(false);
 
   // Mock data for demo mode
   const mockUser = user || { firstName: "Demo User", email: "demo@example.com", id: "demo-123" };
@@ -53,9 +63,23 @@ export default function Dashboard() {
     toast({ title: "Copied!", description: "Address copied to clipboard." });
   };
 
-  // Skip loading for demo mode
-  if (!user && (isProfileLoading || isParcelsLoading)) {
-    // Don't show loading in demo mode
+  // Loading state (only for authenticated users)
+  if (user && (isProfileLoading || isParcelsLoading)) {
+    return <DashboardSkeleton />;
+  }
+
+  // Error state
+  if (user && (profileError || parcelsError)) {
+    return (
+      <ErrorState
+        title="Unable to load dashboard"
+        message="We're having trouble loading your dashboard data. This might be a temporary issue."
+        onRetry={() => {
+          if (profileError) window.location.reload();
+          if (parcelsError) refetchParcels();
+        }}
+      />
+    );
   }
 
   // Calculate stats
@@ -72,7 +96,7 @@ export default function Dashboard() {
           </h1>
           <p className="text-muted-foreground">Manage your shipments and profile.</p>
         </div>
-        <AddParcelDialog />
+        <AddParcelDialog open={addParcelOpen} onOpenChange={setAddParcelOpen} />
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
@@ -122,7 +146,44 @@ export default function Dashboard() {
         <div className="space-y-6">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Trust Score</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Trust Score</CardTitle>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-6 w-6">
+                        <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs p-4" side="left">
+                      <div className="space-y-2">
+                        <p className="font-semibold text-sm">How to increase your Trust Score:</p>
+                        <ul className="space-y-1 text-xs">
+                          <li className="flex items-start gap-2">
+                            <span className="text-accent">✓</span>
+                            <span>Verify phone number (+10 points)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-accent">✓</span>
+                            <span>Upload ID/KYC documents (+20 points)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-accent">✓</span>
+                            <span>Complete 5 successful orders (+15 points)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-accent">✓</span>
+                            <span>Link bank account (+10 points)</span>
+                          </li>
+                        </ul>
+                        <p className="text-xs text-muted-foreground pt-2 border-t">
+                          Higher score = Higher COD limit & priority support
+                        </p>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
@@ -130,13 +191,15 @@ export default function Dashboard() {
                 <TrendingUp className="h-8 w-8 text-green-500" />
               </div>
               <div className="mt-4 h-2 w-full bg-secondary rounded-full overflow-hidden">
-                <div
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${mockProfile?.trustScore || 50}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
                   className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"
-                  style={{ width: `${mockProfile?.trustScore || 50}%` }}
                 />
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Higher score = Higher COD limit. Upload KYC to increase.
+                Higher score = Higher COD limit. Click ? to learn more.
               </p>
             </CardContent>
           </Card>
@@ -160,19 +223,18 @@ export default function Dashboard() {
 
       {/* Recent Parcels */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-primary">Recent Parcels</h2>
-          <Button variant="link" onClick={() => setLocation("/tracking")}>View All</Button>
-        </div>
-
         {mockParcels?.length === 0 ? (
-          <div className="text-center py-12 bg-secondary/30 rounded-xl border border-dashed border-border">
-            <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium">No parcels yet</h3>
-            <p className="text-muted-foreground mb-4">Register your first parcel to start shipping.</p>
-            <AddParcelDialog />
-          </div>
+          <EmptyParcelsState onAddParcel={() => setAddParcelOpen(true)} />
         ) : (
+          <>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-primary">Recent Parcels</h2>
+              <Button variant="link" onClick={() => setLocation("/tracking")}>View All</Button>
+            </div>
+          </>
+        )}
+
+        {mockParcels?.length > 0 && (
           <div className="grid gap-4">
             {mockParcels?.slice(0, 3).map((parcel) => (
               <motion.div
@@ -215,10 +277,19 @@ function getStatusColor(status: string) {
   }
 }
 
-function AddParcelDialog() {
-  const [open, setOpen] = useState(false);
+interface AddParcelDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+function AddParcelDialog({ open: controlledOpen, onOpenChange }: AddParcelDialogProps = {}) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const { mutate, isPending } = useCreateParcel();
   const { toast } = useToast();
+
+  // Use controlled open if provided, otherwise use internal state
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const setOpen = onOpenChange || setInternalOpen;
   
   const form = useForm<CreateParcelForm>({
     resolver: zodResolver(createParcelFormSchema),
