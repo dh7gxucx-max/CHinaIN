@@ -78,7 +78,7 @@ export default function Home() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button size="lg" className="h-14 px-10 text-base bg-accent hover:bg-accent/90 text-accent-foreground font-bold shadow-xl">
+                <Button size="lg" className="h-14 px-10 text-base bg-accent hover:bg-accent/90 text-primary font-bold shadow-xl">
                   Start Shipping Now
                 </Button>
               </motion.a>
