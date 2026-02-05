@@ -47,6 +47,9 @@ export function Navbar() {
     { href: "/tracking", label: "My Parcels", icon: Package },
   ];
 
+  // Check if user is on Dashboard or Tracking pages (demo mode)
+  const isDashboardPage = location === "/dashboard" || location === "/tracking";
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
@@ -69,45 +72,47 @@ export function Navbar() {
 
         {/* Auth Buttons / Profile */}
         <div className="hidden md:flex items-center gap-4">
-          {isAuthenticated ? (
+          {isAuthenticated || isDashboardPage ? (
             <div className="flex items-center gap-4">
               <Link href="/dashboard">
                 <Button variant={location === "/dashboard" ? "secondary" : "ghost"} size="sm">
                   Dashboard
                 </Button>
               </Link>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user?.profileImageUrl || ""} alt={user?.firstName || "User"} />
-                      <AvatarFallback>{user?.firstName?.[0] || "U"}</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user?.firstName} {user?.lastName}</p>
-                      <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {authLinks.map((link) => (
-                    <DropdownMenuItem key={link.href} asChild>
-                      <Link href={link.href} className="flex items-center cursor-pointer">
-                        <link.icon className="mr-2 h-4 w-4" />
-                        {link.label}
-                      </Link>
+              {isAuthenticated && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user?.profileImageUrl || ""} alt={user?.firstName || "User"} />
+                        <AvatarFallback>{user?.firstName?.[0] || "U"}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">{user?.firstName} {user?.lastName}</p>
+                        <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {authLinks.map((link) => (
+                      <DropdownMenuItem key={link.href} asChild>
+                        <Link href={link.href} className="flex items-center cursor-pointer">
+                          <link.icon className="mr-2 h-4 w-4" />
+                          {link.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => logout()} className="text-destructive focus:text-destructive cursor-pointer">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Log out
                     </DropdownMenuItem>
-                  ))}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => logout()} className="text-destructive focus:text-destructive cursor-pointer">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           ) : (
             <div className="flex gap-2">
@@ -139,18 +144,20 @@ export function Navbar() {
                       {link.label}
                     </Link>
                   ))}
-                  {isAuthenticated && authLinks.map((link) => (
+                  {(isAuthenticated || isDashboardPage) && authLinks.map((link) => (
                     <Link key={link.href} href={link.href} className="text-lg font-medium text-primary">
                       {link.label}
                     </Link>
                   ))}
                 </nav>
                 <div className="border-t pt-6">
-                  {isAuthenticated ? (
-                    <Button onClick={() => logout()} variant="outline" className="w-full justify-start text-destructive">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Log out
-                    </Button>
+                  {isAuthenticated || isDashboardPage ? (
+                    isAuthenticated && (
+                      <Button onClick={() => logout()} variant="outline" className="w-full justify-start text-destructive">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Log out
+                      </Button>
+                    )
                   ) : (
                     <div className="flex flex-col gap-2">
                       <Link href="/register" className="w-full">

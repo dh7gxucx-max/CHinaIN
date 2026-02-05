@@ -42,7 +42,9 @@ export default function Dashboard() {
     userId: "demo-123",
     trustScore: 75,
     codLimit: 15000,
-    chineseAddress: "Building 3, No. 888 Industrial Road, Baiyun District"
+    chineseAddress: "黑龙江省鸡西市鸡冠区东太三组义立国际圣邮库一八111118",
+    receiverName: "DP一八()",
+    phone: "13136947557"
   };
   const mockParcels = parcels || [];
 
@@ -87,19 +89,25 @@ export default function Dashboard() {
           <CardContent className="space-y-4">
             <div className="p-4 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
               <div className="flex justify-between items-start">
-                <div className="space-y-1 font-mono text-sm">
-                  <p>Receiver: <span className="text-accent font-bold">C2I-{mockProfile?.id || "LOADING"} {mockUser?.firstName}</span></p>
-                  <p>Address: {mockProfile?.chineseAddress || "Building 3, No. 888 Industrial Road, Baiyun District"}</p>
-                  <p>City: Guangzhou</p>
-                  <p>Province: Guangdong</p>
-                  <p>Phone: +86 138-0013-8000</p>
-                  <p>Zip Code: 510000</p>
+                <div className="space-y-1 text-sm">
+                  <p className="flex items-center gap-2">
+                    <span className="text-blue-200">Имя получателя:</span>
+                    <span className="text-white font-semibold">{mockProfile?.receiverName || `DP一八()`}</span>
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="text-blue-200">Телефон:</span>
+                    <span className="text-white font-semibold">{mockProfile?.phone || "13136947557"}</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-blue-200 flex-shrink-0">Адрес:</span>
+                    <span className="text-white font-semibold">{mockProfile?.chineseAddress || "黑龙江省鸡西市鸡冠区东太三组义立国际圣邮库一八111118"}</span>
+                  </p>
                 </div>
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="text-white hover:bg-white/20"
-                  onClick={() => copyToClipboard(`C2I-${mockProfile?.id} ${mockUser?.firstName}\n${mockProfile?.chineseAddress}\nGuangzhou, Guangdong\n+86 138-0013-8000`)}
+                  className="text-white hover:bg-white/20 flex-shrink-0"
+                  onClick={() => copyToClipboard(`${mockProfile?.receiverName}\n${mockProfile?.phone}\n${mockProfile?.chineseAddress}`)}
                 >
                   <Copy className="h-4 w-4" />
                 </Button>
