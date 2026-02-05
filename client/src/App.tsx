@@ -7,6 +7,9 @@ import { Navbar } from "@/components/Navbar";
 
 import Home from "@/pages/Home";
 import Calculator from "@/pages/Calculator";
+import Pricing from "@/pages/Pricing";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
 import Dashboard from "@/pages/Dashboard";
 import Tracking from "@/pages/Tracking";
 import TermsOfService from "@/pages/TermsOfService";
@@ -43,10 +46,13 @@ function Router() {
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/calculator" component={Calculator} />
+          <Route path="/pricing" component={Pricing} />
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
           <Route path="/terms" component={TermsOfService} />
           <Route path="/privacy" component={PrivacyPolicy} />
           <Route path="/refund" component={RefundPolicy} />
-          
+
           {/* Protected Routes */}
           <Route path="/dashboard">
             {() => <ProtectedRoute component={Dashboard} />}
