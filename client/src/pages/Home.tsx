@@ -10,20 +10,20 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-primary py-20 lg:py-32">
+      <section className="relative overflow-hidden bg-primary min-h-[600px] flex items-center justify-center">
         {/* Abstract Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <svg className="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
             <path d="M0 100 L100 0 L100 100 Z" fill="white" />
           </svg>
         </div>
-        
-        <div className="container relative z-10">
+
+        <div className="container relative z-10 py-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-white space-y-8 text-center max-w-4xl mx-auto"
+            className="text-white space-y-8 text-center max-w-5xl mx-auto"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -43,14 +43,14 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-display font-extrabold leading-tight"
+              className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-extrabold leading-tight"
             >
-              Sourcing from China, <br />
+              Sourcing from China,{" "}
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7, delay: 0.4 }}
-                className="text-accent"
+                className="text-accent block mt-2"
               >
                 Made Simple.
               </motion.span>
@@ -60,7 +60,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.5 }}
-              className="text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed"
+              className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed"
             >
               We handle procurement, quality checks, customs clearance, and last-mile delivery.
               Zero headaches, full transparency.
