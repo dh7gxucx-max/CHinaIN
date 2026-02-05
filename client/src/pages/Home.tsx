@@ -43,7 +43,8 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-extrabold leading-tight"
+              className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-extrabold leading-tight text-white"
+              style={{ textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
             >
               Sourcing from China,{" "}
               <motion.span
@@ -51,6 +52,7 @@ export default function Home() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7, delay: 0.4 }}
                 className="text-accent block mt-2"
+                style={{ textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
               >
                 Made Simple.
               </motion.span>
