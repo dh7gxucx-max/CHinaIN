@@ -20,6 +20,7 @@ export function Navbar() {
   const { user, logout, isAuthenticated } = useAuth();
   const [location] = useLocation();
   const [tickerData, setTickerData] = useState(() => getTickerData());
+  const [demoUser, setDemoUser] = useState<any>(null);
 
   // Get demo user from localStorage if not authenticated
   const getDemoUser = () => {
@@ -32,7 +33,12 @@ export function Navbar() {
     }
   };
 
-  const displayUser = getDemoUser();
+  // Update demo user on mount and when location changes
+  useEffect(() => {
+    setDemoUser(getDemoUser());
+  }, [user, location]);
+
+  const displayUser = user || demoUser;
 
   useEffect(() => {
     // Update ticker data on mount and check daily
@@ -60,8 +66,8 @@ export function Navbar() {
     { href: "/tracking", label: "My Parcels", icon: Package },
   ];
 
-  // Check if user is on Dashboard or Tracking pages (demo mode)
-  const isDashboardPage = location === "/dashboard" || location === "/tracking";
+  // Check if user is logged in (authenticated or has demo session)
+  const hasActiveSession = isAuthenticated || displayUser !== null;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -85,7 +91,7 @@ export function Navbar() {
 
         {/* Auth Buttons / Profile */}
         <div className="hidden md:flex items-center gap-4">
-          {isAuthenticated || isDashboardPage ? (
+          {hasActiveSession ? (
             <div className="flex items-center gap-4">
               {/* User Name Display */}
               {displayUser && (
@@ -102,46 +108,52 @@ export function Navbar() {
                   Dashboard
                 </Button>
               </Link>
-              {isAuthenticated && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={user?.profileImageUrl || ""} alt={user?.firstName || "User"} />
-                        <AvatarFallback>{user?.firstName?.[0] || "U"}</AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{user?.firstName} {user?.lastName}</p>
-                        <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {authLinks.map((link) => (
-                      <DropdownMenuItem key={link.href} asChild>
-                        <Link href={link.href} className="flex items-center cursor-pointer">
-                          <link.icon className="mr-2 h-4 w-4" />
-                          {link.label}
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => {
-                        localStorage.removeItem('demoUser');
-                        logout();
-                      }}
-                      className="text-destructive focus:text-destructive cursor-pointer"
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Log out
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={displayUser?.profileImageUrl || ""} alt={displayUser?.firstName || "User"} />
+                      <AvatarFallback>{displayUser?.firstName?.[0] || "U"}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {displayUser?.firstName} {displayUser?.lastName || ''}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">{displayUser?.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {authLinks.map((link) => (
+                    <DropdownMenuItem key={link.href} asChild>
+                      <Link href={link.href} className="flex items-center cursor-pointer">
+                        <link.icon className="mr-2 h-4 w-4" />
+                        {link.label}
+                      </Link>
                     </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+                  ))}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      localStorage.removeItem('demoUser');
+                      if (isAuthenticated) {
+                        logout();
+                      } else {
+                        // For demo users, just reload the page
+                        window.location.href = '/';
+                      }
+                    }}
+                    className="text-destructive focus:text-destructive cursor-pointer"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           ) : (
             <div className="flex gap-2">
@@ -173,27 +185,30 @@ export function Navbar() {
                       {link.label}
                     </Link>
                   ))}
-                  {(isAuthenticated || isDashboardPage) && authLinks.map((link) => (
+                  {hasActiveSession && authLinks.map((link) => (
                     <Link key={link.href} href={link.href} className="text-lg font-medium text-primary">
                       {link.label}
                     </Link>
                   ))}
                 </nav>
                 <div className="border-t pt-6">
-                  {isAuthenticated || isDashboardPage ? (
-                    isAuthenticated && (
-                      <Button
-                        onClick={() => {
-                          localStorage.removeItem('demoUser');
+                  {hasActiveSession ? (
+                    <Button
+                      onClick={() => {
+                        localStorage.removeItem('demoUser');
+                        if (isAuthenticated) {
                           logout();
-                        }}
-                        variant="outline"
-                        className="w-full justify-start text-destructive"
-                      >
-                        <LogOut className="mr-2 h-4 w-4" />
-                        Log out
-                      </Button>
-                    )
+                        } else {
+                          // For demo users, just reload the page
+                          window.location.href = '/';
+                        }
+                      }}
+                      variant="outline"
+                      className="w-full justify-start text-destructive"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Log out
+                    </Button>
                   ) : (
                     <div className="flex flex-col gap-2">
                       <Link href="/register" className="w-full">
