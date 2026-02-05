@@ -1,96 +1,122 @@
-import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
-import { 
-  users, profiles, parcels, stores, sipCalls,
-  type User, type InsertUser, type Profile, type InsertProfile,
-  type Parcel, type InsertParcel, type Store, type InsertStore,
-  type SipCall, type InsertSipCall
-} from "@shared/schema";
-import { authStorage } from "./replit_integrations/auth/storage";
-
-export interface IStorage {
-  // Auth users (delegated to authStorage but exposed here for convenience)
-  getUser(id: string): Promise<User | undefined>;
-  
-  // Profiles
-  getProfile(userId: string): Promise<Profile | undefined>;
-  createProfile(profile: InsertProfile): Promise<Profile>;
-  updateProfile(userId: string, profile: Partial<InsertProfile>): Promise<Profile>;
-
-  // Parcels
-  getParcels(userId: string): Promise<Parcel[]>;
-  getParcel(id: number): Promise<Parcel | undefined>;
-  createParcel(parcel: InsertParcel): Promise<Parcel>;
-  updateParcel(id: number, parcel: Partial<InsertParcel>): Promise<Parcel>;
-  
-  // Stores
-  getStores(): Promise<Store[]>;
-  createStore(store: InsertStore): Promise<Store>;
-
-  // SIP Calls
-  logSipCall(call: InsertSipCall): Promise<SipCall>;
+// In-memory storage (no database)
+export interface User {
+  id: string;
+  email: string;
+  name: string;
 }
 
-export class DatabaseStorage implements IStorage {
+export interface Profile {
+  id: number;
+  userId: string;
+  trustScore: number;
+  codLimit: number;
+  phoneNumber?: string;
+  indianAddress?: string;
+  chineseAddress?: string;
+}
+
+export interface Parcel {
+  id: number;
+  userId: string;
+  trackingNumber: string;
+  description?: string;
+  weight?: string;
+  status: string;
+  codAmount: number;
+  createdAt: Date;
+}
+
+export interface Store {
+  id: number;
+  name: string;
+  location: string;
+}
+
+export interface IStorage {
+  getUser(id: string): Promise<User | undefined>;
+  getProfile(userId: string): Promise<Profile | undefined>;
+  createProfile(profile: Omit<Profile, 'id'>): Promise<Profile>;
+  updateProfile(userId: string, profile: Partial<Profile>): Promise<Profile>;
+  getParcels(userId: string): Promise<Parcel[]>;
+  getParcel(id: number): Promise<Parcel | undefined>;
+  createParcel(parcel: Omit<Parcel, 'id'>): Promise<Parcel>;
+  updateParcel(id: number, parcel: Partial<Parcel>): Promise<Parcel>;
+  getStores(): Promise<Store[]>;
+  createStore(store: Omit<Store, 'id'>): Promise<Store>;
+}
+
+// In-memory storage implementation
+class InMemoryStorage implements IStorage {
+  private users = new Map<string, User>();
+  private profiles = new Map<string, Profile>();
+  private parcels: Parcel[] = [];
+  private stores: Store[] = [];
+  private nextId = 1;
+
   async getUser(id: string): Promise<User | undefined> {
-    return authStorage.getUser(id);
+    return this.users.get(id);
   }
 
   async getProfile(userId: string): Promise<Profile | undefined> {
-    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, userId));
-    return profile;
+    return this.profiles.get(userId);
   }
 
-  async createProfile(profile: InsertProfile): Promise<Profile> {
-    const [newProfile] = await db.insert(profiles).values(profile).returning();
+  async createProfile(profile: Omit<Profile, 'id'>): Promise<Profile> {
+    const newProfile = { ...profile, id: this.nextId++ };
+    this.profiles.set(profile.userId, newProfile);
     return newProfile;
   }
 
-  async updateProfile(userId: string, updates: Partial<InsertProfile>): Promise<Profile> {
-    const [updated] = await db
-      .update(profiles)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(eq(profiles.userId, userId))
-      .returning();
+  async updateProfile(userId: string, updates: Partial<Profile>): Promise<Profile> {
+    const existing = this.profiles.get(userId);
+    if (!existing) {
+      throw new Error('Profile not found');
+    }
+    const updated = { ...existing, ...updates };
+    this.profiles.set(userId, updated);
     return updated;
   }
 
   async getParcels(userId: string): Promise<Parcel[]> {
-    return db.select().from(parcels).where(eq(parcels.userId, userId)).orderBy(desc(parcels.createdAt));
+    return this.parcels.filter(p => p.userId === userId);
   }
 
   async getParcel(id: number): Promise<Parcel | undefined> {
-    const [parcel] = await db.select().from(parcels).where(eq(parcels.id, id));
-    return parcel;
+    return this.parcels.find(p => p.id === id);
   }
 
-  async createParcel(parcel: InsertParcel): Promise<Parcel> {
-    const [newParcel] = await db.insert(parcels).values(parcel).returning();
+  async createParcel(parcel: Omit<Parcel, 'id'>): Promise<Parcel> {
+    const newParcel = { ...parcel, id: this.nextId++ };
+    this.parcels.push(newParcel);
     return newParcel;
   }
 
-  async updateParcel(id: number, updates: Partial<InsertParcel>): Promise<Parcel> {
-    const [updated] = await db
-      .update(parcels)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(eq(parcels.id, id))
-      .returning();
-    return updated;
+  async updateParcel(id: number, updates: Partial<Parcel>): Promise<Parcel> {
+    const index = this.parcels.findIndex(p => p.id === id);
+    if (index === -1) {
+      throw new Error('Parcel not found');
+    }
+    this.parcels[index] = { ...this.parcels[index], ...updates };
+    return this.parcels[index];
   }
 
   async getStores(): Promise<Store[]> {
-    return db.select().from(stores);
+    // Return some mock stores
+    if (this.stores.length === 0) {
+      this.stores = [
+        { id: 1, name: 'Guangzhou Warehouse', location: 'Guangzhou, China' },
+        { id: 2, name: 'Shenzhen Warehouse', location: 'Shenzhen, China' },
+        { id: 3, name: 'Mumbai Hub', location: 'Mumbai, India' },
+      ];
+    }
+    return this.stores;
   }
 
-  async createStore(store: InsertStore): Promise<Store> {
-    const [newStore] = await db.insert(stores).values(store).returning();
+  async createStore(store: Omit<Store, 'id'>): Promise<Store> {
+    const newStore = { ...store, id: this.nextId++ };
+    this.stores.push(newStore);
     return newStore;
-  }
-
-  async logSipCall(call: InsertSipCall): Promise<SipCall> {
-    const [newCall] = await db.insert(sipCalls).values(call).returning();
-    return newCall;
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new InMemoryStorage();

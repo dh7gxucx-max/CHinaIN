@@ -10,14 +10,22 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertParcelSchema } from "@shared/schema";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useLocation } from "wouter";
 
-const createParcelFormSchema = insertParcelSchema;
+// Schema definition (moved from deleted schema file)
+const createParcelFormSchema = z.object({
+  userId: z.string(),
+  trackingNumber: z.string(),
+  description: z.string().optional(),
+  weight: z.string().optional(),
+  status: z.string().default('registered'),
+  codAmount: z.number().default(0),
+  createdAt: z.date().default(() => new Date()),
+});
 type CreateParcelForm = z.infer<typeof createParcelFormSchema>;
 
 export default function Dashboard() {

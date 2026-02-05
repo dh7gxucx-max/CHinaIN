@@ -1,5 +1,37 @@
 import { z } from 'zod';
-import { insertParcelSchema, insertProfileSchema, parcels, profiles, sipCalls } from './schema';
+
+// Schema definitions (moved from deleted schema.ts)
+const insertParcelSchema = z.object({
+  userId: z.string(),
+  trackingNumber: z.string(),
+  description: z.string().optional(),
+  weight: z.string().optional(),
+  status: z.string().default('registered'),
+  codAmount: z.number().default(0),
+  createdAt: z.date().default(() => new Date()),
+});
+
+const insertProfileSchema = z.object({
+  userId: z.string(),
+  trustScore: z.number().default(50),
+  codLimit: z.number().default(15000),
+  phoneNumber: z.string().optional(),
+  indianAddress: z.string().optional(),
+  chineseAddress: z.string().optional(),
+});
+
+// Mock table types for compatibility
+const parcels = {
+  $inferSelect: {} as any,
+};
+
+const profiles = {
+  $inferSelect: {} as any,
+};
+
+const sipCalls = {
+  $inferSelect: {} as any,
+};
 
 export const errorSchemas = {
   validation: z.object({
