@@ -26,8 +26,19 @@ export default function Login() {
           title: "Login Successful!",
           description: "Welcome back to China2India",
         });
-        // Redirect to mock login endpoint
-        window.location.href = "/api/login";
+        // First trigger mock login, then redirect to dashboard
+        fetch("/api/login", { method: "GET" })
+          .then(() => {
+            setTimeout(() => {
+              setLocation("/dashboard");
+            }, 500);
+          })
+          .catch(() => {
+            // Fallback: redirect to dashboard anyway
+            setTimeout(() => {
+              setLocation("/dashboard");
+            }, 500);
+          });
       } else {
         toast({
           title: "Error",

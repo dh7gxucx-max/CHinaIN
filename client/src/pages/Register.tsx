@@ -56,12 +56,21 @@ export default function Register() {
     setTimeout(() => {
       toast({
         title: "Registration Successful!",
-        description: "Welcome to China2India. Logging you in...",
+        description: "Welcome to China2India. Redirecting to dashboard...",
       });
-      // Redirect to mock login endpoint
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 1000);
+      // First trigger mock login, then redirect to dashboard
+      fetch("/api/login", { method: "GET" })
+        .then(() => {
+          setTimeout(() => {
+            setLocation("/dashboard");
+          }, 500);
+        })
+        .catch(() => {
+          // Fallback: redirect to dashboard anyway
+          setTimeout(() => {
+            setLocation("/dashboard");
+          }, 500);
+        });
     }, 1000);
   };
 
