@@ -29,12 +29,12 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-4 py-2 text-sm text-accent backdrop-blur-sm"
+              className="inline-flex items-center rounded-full border-2 border-accent bg-accent/20 px-5 py-2 text-sm text-accent backdrop-blur-sm font-bold shadow-lg"
             >
               <motion.span
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="flex h-2 w-2 rounded-full bg-accent mr-2"
+                className="flex h-2 w-2 rounded-full bg-accent mr-2 shadow-lg"
               ></motion.span>
               Fastest route to India
             </motion.div>
@@ -60,7 +60,8 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.5 }}
-              className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed"
+              className="text-lg md:text-xl text-white/95 max-w-3xl mx-auto leading-relaxed font-medium"
+              style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}
             >
               We handle procurement, quality checks, customs clearance, and last-mile delivery.
               Zero headaches, full transparency.
@@ -86,7 +87,7 @@ export default function Home() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Link href="/calculator">
-                  <Button size="lg" variant="outline" className="h-14 px-10 text-base bg-transparent border-white/20 text-white hover:bg-white/10 shadow-xl">
+                  <Button size="lg" variant="outline" className="h-14 px-10 text-base bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 shadow-xl font-semibold">
                     <CalcIcon className="mr-2 h-5 w-5" />
                     Calculate Shipping
                   </Button>
