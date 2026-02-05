@@ -35,22 +35,30 @@ export default function Dashboard() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
+  // Mock data for demo mode
+  const mockUser = user || { firstName: "Demo User", email: "demo@example.com", id: "demo-123" };
+  const mockProfile = profile || {
+    id: 1,
+    userId: "demo-123",
+    trustScore: 75,
+    codLimit: 15000,
+    chineseAddress: "Building 3, No. 888 Industrial Road, Baiyun District"
+  };
+  const mockParcels = parcels || [];
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({ title: "Copied!", description: "Address copied to clipboard." });
   };
 
-  if (isProfileLoading || isParcelsLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+  // Skip loading for demo mode
+  if (!user && (isProfileLoading || isParcelsLoading)) {
+    // Don't show loading in demo mode
   }
 
   // Calculate stats
-  const pendingParcels = parcels?.filter(p => p.status === 'registered' || p.status === 'weighing').length || 0;
-  const inTransit = parcels?.filter(p => p.status === 'shipped' || p.status === 'ready_to_ship').length || 0;
+  const pendingParcels = mockParcels?.filter(p => p.status === 'registered' || p.status === 'weighing').length || 0;
+  const inTransit = mockParcels?.filter(p => p.status === 'shipped' || p.status === 'ready_to_ship').length || 0;
 
   return (
     <div className="container py-8 space-y-8">
@@ -58,7 +66,7 @@ export default function Dashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-display font-bold text-primary">
-            Welcome back, {user?.firstName}
+            Welcome back, {mockUser?.firstName}
           </h1>
           <p className="text-muted-foreground">Manage your shipments and profile.</p>
         </div>
@@ -80,18 +88,18 @@ export default function Dashboard() {
             <div className="p-4 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
               <div className="flex justify-between items-start">
                 <div className="space-y-1 font-mono text-sm">
-                  <p>Receiver: <span className="text-accent font-bold">C2I-{profile?.id || "LOADING"} {user?.firstName}</span></p>
-                  <p>Address: {profile?.chineseAddress || "Building 3, No. 888 Industrial Road, Baiyun District"}</p>
+                  <p>Receiver: <span className="text-accent font-bold">C2I-{mockProfile?.id || "LOADING"} {mockUser?.firstName}</span></p>
+                  <p>Address: {mockProfile?.chineseAddress || "Building 3, No. 888 Industrial Road, Baiyun District"}</p>
                   <p>City: Guangzhou</p>
                   <p>Province: Guangdong</p>
                   <p>Phone: +86 138-0013-8000</p>
                   <p>Zip Code: 510000</p>
                 </div>
-                <Button 
-                  size="icon" 
-                  variant="ghost" 
+                <Button
+                  size="icon"
+                  variant="ghost"
                   className="text-white hover:bg-white/20"
-                  onClick={() => copyToClipboard(`C2I-${profile?.id} ${user?.firstName}\n${profile?.chineseAddress}\nGuangzhou, Guangdong\n+86 138-0013-8000`)}
+                  onClick={() => copyToClipboard(`C2I-${mockProfile?.id} ${mockUser?.firstName}\n${mockProfile?.chineseAddress}\nGuangzhou, Guangdong\n+86 138-0013-8000`)}
                 >
                   <Copy className="h-4 w-4" />
                 </Button>
@@ -112,13 +120,13 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <div className="text-4xl font-bold text-primary">{profile?.trustScore || 50}</div>
+                <div className="text-4xl font-bold text-primary">{mockProfile?.trustScore || 50}</div>
                 <TrendingUp className="h-8 w-8 text-green-500" />
               </div>
               <div className="mt-4 h-2 w-full bg-secondary rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500" 
-                  style={{ width: `${profile?.trustScore || 50}%` }}
+                <div
+                  className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"
+                  style={{ width: `${mockProfile?.trustScore || 50}%` }}
                 />
               </div>
               <p className="text-xs text-muted-foreground mt-2">
@@ -151,7 +159,7 @@ export default function Dashboard() {
           <Button variant="link" onClick={() => setLocation("/tracking")}>View All</Button>
         </div>
 
-        {parcels?.length === 0 ? (
+        {mockParcels?.length === 0 ? (
           <div className="text-center py-12 bg-secondary/30 rounded-xl border border-dashed border-border">
             <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium">No parcels yet</h3>
@@ -160,8 +168,8 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="grid gap-4">
-            {parcels?.slice(0, 3).map((parcel) => (
-              <motion.div 
+            {mockParcels?.slice(0, 3).map((parcel) => (
+              <motion.div
                 key={parcel.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -211,7 +219,6 @@ function AddParcelDialog() {
     defaultValues: {
       trackingNumber: "",
       description: "",
-      images: [],
     }
   });
 

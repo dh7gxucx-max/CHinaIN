@@ -53,13 +53,9 @@ function Router() {
           <Route path="/privacy" component={PrivacyPolicy} />
           <Route path="/refund" component={RefundPolicy} />
 
-          {/* Protected Routes */}
-          <Route path="/dashboard">
-            {() => <ProtectedRoute component={Dashboard} />}
-          </Route>
-          <Route path="/tracking">
-            {() => <ProtectedRoute component={Tracking} />}
-          </Route>
+          {/* Dashboard & Tracking - Demo Mode */}
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/tracking" component={Tracking} />
 
           <Route component={NotFound} />
         </Switch>
