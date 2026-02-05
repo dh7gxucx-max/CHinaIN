@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import { ErrorState } from "@/components/ErrorState";
@@ -45,8 +45,30 @@ export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [addParcelOpen, setAddParcelOpen] = useState(false);
 
-  // Mock data for demo mode
-  const mockUser = user || { firstName: "Demo User", email: "demo@example.com", id: "demo-123" };
+  // Load demo user from localStorage or create new one
+  const getDemoUser = () => {
+    if (user) return user;
+
+    const stored = localStorage.getItem('demoUser');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        console.error('Failed to parse demo user', e);
+      }
+    }
+
+    return { firstName: "Demo User", email: "demo@example.com", id: "demo-123" };
+  };
+
+  const mockUser = getDemoUser();
+
+  // Save demo user to localStorage when on dashboard
+  useEffect(() => {
+    if (!user) {
+      localStorage.setItem('demoUser', JSON.stringify(mockUser));
+    }
+  }, [user, mockUser]);
   const mockProfile = profile || {
     id: 1,
     userId: "demo-123",
@@ -92,7 +114,7 @@ export default function Dashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-display font-bold text-primary">
-            Welcome back, {mockUser?.firstName}
+            Welcome back, {mockUser.firstName}!
           </h1>
           <p className="text-muted-foreground">Manage your shipments and profile.</p>
         </div>

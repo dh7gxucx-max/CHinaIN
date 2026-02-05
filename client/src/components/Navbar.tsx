@@ -21,6 +21,19 @@ export function Navbar() {
   const [location] = useLocation();
   const [tickerData, setTickerData] = useState(() => getTickerData());
 
+  // Get demo user from localStorage if not authenticated
+  const getDemoUser = () => {
+    if (user) return user;
+    try {
+      const stored = localStorage.getItem('demoUser');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const displayUser = getDemoUser();
+
   useEffect(() => {
     // Update ticker data on mount and check daily
     const data = getTickerData();
@@ -74,6 +87,16 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-4">
           {isAuthenticated || isDashboardPage ? (
             <div className="flex items-center gap-4">
+              {/* User Name Display */}
+              {displayUser && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Welcome, </span>
+                  <span className="font-semibold text-primary">
+                    {displayUser.firstName}
+                  </span>
+                </div>
+              )}
+
               <Link href="/dashboard">
                 <Button variant={location === "/dashboard" ? "secondary" : "ghost"} size="sm">
                   Dashboard
@@ -106,7 +129,13 @@ export function Navbar() {
                       </DropdownMenuItem>
                     ))}
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => logout()} className="text-destructive focus:text-destructive cursor-pointer">
+                    <DropdownMenuItem
+                      onClick={() => {
+                        localStorage.removeItem('demoUser');
+                        logout();
+                      }}
+                      className="text-destructive focus:text-destructive cursor-pointer"
+                    >
                       <LogOut className="mr-2 h-4 w-4" />
                       Log out
                     </DropdownMenuItem>
@@ -153,7 +182,14 @@ export function Navbar() {
                 <div className="border-t pt-6">
                   {isAuthenticated || isDashboardPage ? (
                     isAuthenticated && (
-                      <Button onClick={() => logout()} variant="outline" className="w-full justify-start text-destructive">
+                      <Button
+                        onClick={() => {
+                          localStorage.removeItem('demoUser');
+                          logout();
+                        }}
+                        variant="outline"
+                        className="w-full justify-start text-destructive"
+                      >
                         <LogOut className="mr-2 h-4 w-4" />
                         Log out
                       </Button>

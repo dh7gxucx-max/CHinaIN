@@ -54,10 +54,21 @@ export default function Register() {
 
     // Simulate registration process
     setTimeout(() => {
+      // Save demo user data to localStorage
+      const demoUser = {
+        firstName: formData.name.split(' ')[0] || formData.name,
+        lastName: formData.name.split(' ').slice(1).join(' ') || '',
+        email: formData.email,
+        phone: formData.phone,
+        id: `user-${Date.now()}`,
+      };
+      localStorage.setItem('demoUser', JSON.stringify(demoUser));
+
       toast({
         title: "Registration Successful!",
-        description: "Welcome to China2India. Redirecting to dashboard...",
+        description: `Welcome to China2India, ${demoUser.firstName}! Redirecting to dashboard...`,
       });
+
       // First trigger mock login, then redirect to dashboard
       fetch("/api/login", { method: "GET" })
         .then(() => {
