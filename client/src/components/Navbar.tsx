@@ -116,21 +116,23 @@ export function Navbar() {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">
+                <DropdownMenuContent className="w-64" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal pb-3">
+                    <div className="flex flex-col space-y-2">
+                      <p className="text-sm font-semibold leading-none text-primary">
                         {displayUser?.firstName} {displayUser?.lastName || ''}
                       </p>
-                      <p className="text-xs leading-none text-muted-foreground">{displayUser?.email}</p>
+                      <p className="text-xs leading-none text-muted-foreground truncate" title={displayUser?.email}>
+                        {displayUser?.email}
+                      </p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   {authLinks.map((link) => (
                     <DropdownMenuItem key={link.href} asChild>
-                      <Link href={link.href} className="flex items-center cursor-pointer">
-                        <link.icon className="mr-2 h-4 w-4" />
-                        {link.label}
+                      <Link href={link.href} className="flex items-center cursor-pointer py-2">
+                        <link.icon className="mr-3 h-4 w-4" />
+                        <span>{link.label}</span>
                       </Link>
                     </DropdownMenuItem>
                   ))}
@@ -145,10 +147,10 @@ export function Navbar() {
                         window.location.href = '/';
                       }
                     }}
-                    className="text-destructive focus:text-destructive cursor-pointer"
+                    className="text-destructive focus:text-destructive cursor-pointer py-2"
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log out
+                    <LogOut className="mr-3 h-4 w-4" />
+                    <span>Log out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
