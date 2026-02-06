@@ -407,10 +407,10 @@ export default function Pricing() {
             <CardContent className="py-8 px-6 md:py-10 md:px-8">
               <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="text-center md:text-left flex-1">
-                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-2">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-2 text-white">
                     Ready to Start Shipping?
                   </h2>
-                  <p className="text-blue-100 text-sm md:text-base">
+                  <p className="text-white/90 text-sm md:text-base">
                     Calculate your exact shipping cost or contact our team for a custom quote
                   </p>
                 </div>
