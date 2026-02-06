@@ -166,8 +166,10 @@ export default function Pricing() {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/20 mb-6">
               <Package className="w-8 h-8 text-accent" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-display font-bold mb-4" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
-              Transparent Pricing
+            <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
+              <span className="bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
+                Transparent Pricing
+              </span>
             </h1>
             <p className="text-xl text-white max-w-2xl mx-auto" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
               No hidden fees. No surprises. Just honest, straightforward pricing for your China to India shipments.

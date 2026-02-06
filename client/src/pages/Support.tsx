@@ -124,8 +124,10 @@ export default function Support() {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/20 mb-6">
               <Headphones className="w-8 h-8 text-accent" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-display font-bold mb-4" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
-              How Can We Help?
+            <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
+              <span className="bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
+                How Can We Help?
+              </span>
             </h1>
             <p className="text-xl text-white max-w-2xl mx-auto" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
               Our support team is here to assist you with any questions about shipping from China to India.
