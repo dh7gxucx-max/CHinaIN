@@ -218,7 +218,7 @@ export default function Home() {
                   Get your Chinese address <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
