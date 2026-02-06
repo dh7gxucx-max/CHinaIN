@@ -10,12 +10,100 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-primary min-h-[600px] flex items-center justify-center">
-        {/* Abstract Background Pattern */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-blue-900 min-h-[600px] flex items-center justify-center">
+        {/* Animated Background Patterns */}
         <div className="absolute inset-0 opacity-10">
           <svg className="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
             <path d="M0 100 L100 0 L100 100 Z" fill="white" />
           </svg>
+        </div>
+
+        {/* Floating Circles */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            animate={{
+              y: [0, -30, 0],
+              x: [0, 20, 0],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute top-20 left-10 w-72 h-72 bg-accent/10 rounded-full blur-3xl"
+          />
+          <motion.div
+            animate={{
+              y: [0, 40, 0],
+              x: [0, -30, 0],
+            }}
+            transition={{
+              duration: 25,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute bottom-20 right-10 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl"
+          />
+          <motion.div
+            animate={{
+              y: [0, -20, 0],
+              x: [0, 15, 0],
+            }}
+            transition={{
+              duration: 18,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute top-1/2 left-1/3 w-64 h-64 bg-white/5 rounded-full blur-3xl"
+          />
+        </div>
+
+        {/* Decorative Icons */}
+        <div className="absolute inset-0 pointer-events-none">
+          <motion.div
+            animate={{
+              y: [0, -15, 0],
+              rotate: [0, 5, 0],
+            }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute top-32 right-20 opacity-20"
+          >
+            <Package className="w-16 h-16 text-accent" />
+          </motion.div>
+          <motion.div
+            animate={{
+              y: [0, 20, 0],
+              rotate: [0, -5, 0],
+            }}
+            transition={{
+              duration: 7,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+            className="absolute bottom-40 left-16 opacity-20"
+          >
+            <Truck className="w-20 h-20 text-white" />
+          </motion.div>
+          <motion.div
+            animate={{
+              y: [0, -10, 0],
+              rotate: [0, 10, 0],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.5
+            }}
+            className="absolute top-40 left-1/4 opacity-15"
+          >
+            <Box className="w-14 h-14 text-accent" />
+          </motion.div>
         </div>
 
         <div className="container relative z-10 py-16">
