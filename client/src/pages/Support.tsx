@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Headphones, Mail, MessageCircle, Phone, Clock, MapPin, Send } from "lucide-react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 import {
   Accordion,
   AccordionContent,
@@ -35,11 +36,24 @@ export default function Support() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
+    // Simulate ticket creation
     setTimeout(() => {
+      const ticketId = `TKT-${Date.now().toString().slice(-6)}`;
+
+      // Save ticket to localStorage
+      const tickets = JSON.parse(localStorage.getItem('supportTickets') || '[]');
+      const newTicket = {
+        id: ticketId,
+        ...formData,
+        status: 'open',
+        createdAt: new Date().toISOString(),
+      };
+      tickets.push(newTicket);
+      localStorage.setItem('supportTickets', JSON.stringify(tickets));
+
       toast({
-        title: "Message Sent!",
-        description: "We'll get back to you within 24 hours.",
+        title: "Ticket Created!",
+        description: `Your ticket #${ticketId} has been created. We'll respond within 24 hours.`,
       });
       setFormData({ name: "", email: "", subject: "", message: "" });
       setIsSubmitting(false);
@@ -90,17 +104,10 @@ export default function Support() {
     },
     {
       icon: MessageCircle,
-      title: "Live Chat",
-      description: "Chat with our team",
-      detail: "Available 9 AM - 7 PM IST",
+      title: "Support Tickets",
+      description: "Submit a ticket",
+      detail: "Track your request",
       color: "bg-green-50 text-green-600",
-    },
-    {
-      icon: MapPin,
-      title: "Warehouse",
-      description: "Guangzhou, China",
-      detail: "Building 3, Industrial Road",
-      color: "bg-orange-50 text-orange-600",
     },
   ];
 
@@ -130,7 +137,7 @@ export default function Support() {
       {/* Contact Methods */}
       <section className="py-16">
         <div className="container">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          <div className="grid md:grid-cols-3 gap-6 mb-16 max-w-4xl mx-auto">
             {contactMethods.map((method, i) => (
               <motion.div
                 key={i}
@@ -169,9 +176,9 @@ export default function Support() {
             >
               <Card className="shadow-xl">
                 <CardHeader>
-                  <CardTitle className="text-2xl">Send Us a Message</CardTitle>
+                  <CardTitle className="text-2xl">Create Support Ticket</CardTitle>
                   <CardDescription>
-                    Fill out the form below and we'll get back to you as soon as possible.
+                    Submit a support ticket and we'll get back to you within 24 hours. You can track your ticket status anytime.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -233,14 +240,22 @@ export default function Support() {
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
-                        "Sending..."
+                        "Creating Ticket..."
                       ) : (
                         <>
                           <Send className="w-4 h-4 mr-2" />
-                          Send Message
+                          Create Ticket
                         </>
                       )}
                     </Button>
+
+                    <div className="text-center pt-4">
+                      <Link href="/tickets">
+                        <Button variant="link" className="text-sm">
+                          View My Tickets →
+                        </Button>
+                      </Link>
+                    </div>
                   </form>
                 </CardContent>
               </Card>
