@@ -397,27 +397,31 @@ export default function Pricing() {
       </section>
 
       {/* CTA */}
-      <section className="py-16">
-        <div className="container">
-          <Card className="bg-primary text-white border-none shadow-2xl">
-            <CardContent className="py-12 text-center">
-              <h2 className="text-3xl font-display font-bold mb-4">
-                Ready to Start Shipping?
-              </h2>
-              <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
-                Calculate your exact shipping cost or contact our team for a custom quote
-              </p>
-              <div className="flex flex-wrap gap-4 justify-center">
-                <Link href="/calculator">
-                  <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                    Calculate Shipping Cost
-                  </Button>
-                </Link>
-                <Link href="/dashboard">
-                  <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10">
-                    Get Started
-                  </Button>
-                </Link>
+      <section className="py-12">
+        <div className="container max-w-5xl">
+          <Card className="bg-gradient-to-r from-primary to-blue-900 text-white border-none shadow-2xl overflow-hidden">
+            <CardContent className="py-8 px-6 md:py-10 md:px-8">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="text-center md:text-left flex-1">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-2">
+                    Ready to Start Shipping?
+                  </h2>
+                  <p className="text-blue-100 text-sm md:text-base">
+                    Calculate your exact shipping cost or contact our team for a custom quote
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+                  <Link href="/calculator">
+                    <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold whitespace-nowrap">
+                      Calculate Shipping Cost
+                    </Button>
+                  </Link>
+                  <Link href="/dashboard">
+                    <Button size="lg" variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold whitespace-nowrap">
+                      Get Started
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </CardContent>
           </Card>
