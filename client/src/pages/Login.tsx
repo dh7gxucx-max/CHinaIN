@@ -228,9 +228,17 @@ export default function Login() {
               <p className="text-sm font-semibold text-primary mb-2">
                 🎯 Demo Accounts for Testing
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground mb-2">
                 Use one of these accounts to try the platform
               </p>
+              <div className="flex items-center justify-center gap-2 text-xs">
+                <span className="text-muted-foreground">or</span>
+                <Link href="/register">
+                  <span className="text-accent hover:text-accent/80 font-semibold cursor-pointer underline">
+                    create your own account
+                  </span>
+                </Link>
+              </div>
             </div>
             <div className="space-y-3 text-xs">
               <div className="bg-background p-3 rounded-lg border">

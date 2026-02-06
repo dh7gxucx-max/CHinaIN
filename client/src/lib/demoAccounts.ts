@@ -26,13 +26,58 @@ export const demoAccounts = [
   },
 ];
 
-export function validateLogin(email: string, password: string) {
-  const account = demoAccounts.find(
-    (acc) => acc.email === email && acc.password === password
-  );
-  return account || null;
+// Get all registered accounts from localStorage
+function getRegisteredAccounts() {
+  try {
+    const accounts = localStorage.getItem('registeredAccounts');
+    return accounts ? JSON.parse(accounts) : [];
+  } catch {
+    return [];
+  }
 }
 
+// Save new account to localStorage
+export function registerNewAccount(account: {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+}) {
+  const accounts = getRegisteredAccounts();
+  const newAccount = {
+    ...account,
+    id: `user-${Date.now()}`,
+    createdAt: new Date().toISOString(),
+  };
+  accounts.push(newAccount);
+  localStorage.setItem('registeredAccounts', JSON.stringify(accounts));
+  return newAccount;
+}
+
+// Check login against both demo accounts and registered accounts
+export function validateLogin(email: string, password: string) {
+  // First check demo accounts
+  const demoAccount = demoAccounts.find(
+    (acc) => acc.email === email && acc.password === password
+  );
+  if (demoAccount) return demoAccount;
+
+  // Then check registered accounts
+  const registeredAccounts = getRegisteredAccounts();
+  const registeredAccount = registeredAccounts.find(
+    (acc: any) => acc.email === email && acc.password === password
+  );
+  return registeredAccount || null;
+}
+
+// Check if email is registered in either demo or registered accounts
 export function isEmailRegistered(email: string) {
-  return demoAccounts.some((acc) => acc.email === email);
+  // Check demo accounts
+  const isDemoEmail = demoAccounts.some((acc) => acc.email === email);
+  if (isDemoEmail) return true;
+
+  // Check registered accounts
+  const registeredAccounts = getRegisteredAccounts();
+  return registeredAccounts.some((acc: any) => acc.email === email);
 }

@@ -7,7 +7,7 @@ import { Package, Mail, Lock, User, Phone, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { isEmailRegistered } from "@/lib/demoAccounts";
+import { isEmailRegistered, registerNewAccount } from "@/lib/demoAccounts";
 
 export default function Register() {
   const [, setLocation] = useLocation();
@@ -64,21 +64,30 @@ export default function Register() {
       return;
     }
 
-    // Simulate registration process
+    // Register new account
     setTimeout(() => {
-      // Save demo user data to localStorage
-      const demoUser = {
+      // Register account in localStorage "database"
+      const newAccount = registerNewAccount({
+        email: formData.email,
+        password: formData.password,
         firstName: formData.name.split(' ')[0] || formData.name,
         lastName: formData.name.split(' ').slice(1).join(' ') || '',
-        email: formData.email,
         phone: formData.phone,
-        id: `user-${Date.now()}`,
+      });
+
+      // Save current user session
+      const demoUser = {
+        firstName: newAccount.firstName,
+        lastName: newAccount.lastName,
+        email: newAccount.email,
+        phone: newAccount.phone,
+        id: newAccount.id,
       };
       localStorage.setItem('demoUser', JSON.stringify(demoUser));
 
       toast({
         title: "Registration Successful!",
-        description: `Welcome to China2India, ${demoUser.firstName}! Redirecting to dashboard...`,
+        description: `Welcome to China2India, ${demoUser.firstName}! Your account has been created.`,
       });
 
       // First trigger mock login, then redirect to dashboard
