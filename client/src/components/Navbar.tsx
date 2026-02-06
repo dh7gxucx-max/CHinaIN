@@ -68,37 +68,35 @@ export function Navbar() {
   const hasActiveSession = isAuthenticated || displayUser !== null;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-primary/10 bg-gradient-to-r from-background via-background to-primary/5 backdrop-blur-lg shadow-sm supports-[backdrop-filter]:bg-background/80">
+    <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 shadow-sm">
       <div className="container flex h-16 items-center justify-between py-2">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-display font-bold text-xl tracking-tight text-primary group">
+        <Link href="/" className="flex items-center gap-2 font-display font-bold text-xl tracking-tight group">
           <motion.div
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.5 }}
-            className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-blue-700 text-primary-foreground shadow-lg group-hover:shadow-xl transition-shadow"
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.3 }}
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-md group-hover:shadow-lg transition-shadow"
           >
             <Package className="h-5 w-5" />
           </motion.div>
-          <span className="bg-gradient-to-r from-primary to-blue-700 bg-clip-text text-transparent">
-            China<span className="text-accent font-black">2</span>India
+          <span className="text-primary">
+            China<span className="text-accent">2</span>India
           </span>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-1 text-sm font-medium">
+        <nav className="hidden md:flex items-center gap-2 text-sm font-medium">
           {navLinks.map((link) => (
             <Link key={link.href} href={link.href}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <div
                 className={`px-4 py-2 rounded-lg transition-all ${
                   location === link.href
-                    ? "bg-primary/10 text-primary font-semibold shadow-sm"
-                    : "text-muted-foreground hover:text-primary hover:bg-primary/5"
+                    ? "bg-primary text-white font-semibold"
+                    : "text-gray-600 hover:text-primary hover:bg-gray-100"
                 }`}
               >
                 {link.label}
-              </motion.div>
+              </div>
             </Link>
           ))}
         </nav>
@@ -174,16 +172,12 @@ export function Navbar() {
           ) : (
             <div className="flex gap-2">
               <Link href="/login">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button variant="ghost" size="sm" className="hover:bg-primary/10">Log in</Button>
-                </motion.div>
+                <Button variant="ghost" size="sm" className="hover:bg-gray-100">Log in</Button>
               </Link>
               <Link href="/register">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button size="sm" className="bg-gradient-to-r from-accent to-yellow-500 hover:from-accent/90 hover:to-yellow-500/90 text-primary font-bold shadow-lg hover:shadow-xl transition-all">
-                    Sign Up
-                  </Button>
-                </motion.div>
+                <Button size="sm" className="bg-accent hover:bg-accent/90 text-primary font-semibold shadow-md">
+                  Sign Up
+                </Button>
               </Link>
             </div>
           )}
