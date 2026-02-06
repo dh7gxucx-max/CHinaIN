@@ -24,7 +24,11 @@
       "Bash(netstat:*)",
       "Bash(findstr:*)",
       "Bash(npm run build:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(if [ -f .env ])",
+      "Bash(then echo \"=== .env file exists ===\")",
+      "Bash(else echo \"No .env file found\")",
+      "Bash(fi:*)"
     ]
   }
 }
