@@ -116,7 +116,7 @@ export function Navbar() {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-64" align="end" forceMount>
+                <DropdownMenuContent className="w-64 bg-background border shadow-lg" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal pb-3">
                     <div className="flex flex-col space-y-2">
                       <p className="text-sm font-semibold leading-none text-primary">
