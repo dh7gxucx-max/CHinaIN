@@ -24,7 +24,7 @@ export default function Home() {
             }}
             className="absolute inset-0 opacity-60 blur-3xl"
             style={{
-              background: "linear-gradient(45deg, #1e40af, #3b82f6, #60a5fa, #fbbf24, #f59e0b, #1e40af)",
+              background: "linear-gradient(45deg, #1e40af, #3b82f6, #60a5fa, #1e40af)",
               backgroundSize: "400% 400%",
             }}
           />
@@ -39,7 +39,7 @@ export default function Home() {
             }}
             className="absolute inset-0 opacity-40 blur-2xl"
             style={{
-              background: "linear-gradient(-45deg, #3b82f6, #1e40af, #fbbf24, #60a5fa, #3b82f6)",
+              background: "linear-gradient(-45deg, #3b82f6, #1e40af, #60a5fa, #3b82f6)",
               backgroundSize: "400% 400%",
             }}
           />
