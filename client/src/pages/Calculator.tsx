@@ -89,9 +89,9 @@ export default function Calculator() {
                     <SelectTrigger className="h-14 text-lg">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white border shadow-lg">
                       {Object.entries(shippingRates).map(([key, rate]) => (
-                        <SelectItem key={key} value={key} className="text-base">
+                        <SelectItem key={key} value={key} className="text-base bg-white hover:bg-gray-100">
                           {rate.name} - ${rate.price}/kg ({rate.time})
                         </SelectItem>
                       ))}
