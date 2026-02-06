@@ -7,6 +7,7 @@ import { Package, Mail, Lock, User, Phone, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { isEmailRegistered } from "@/lib/demoAccounts";
 
 export default function Register() {
   const [, setLocation] = useLocation();
@@ -46,6 +47,17 @@ export default function Register() {
       toast({
         title: "Error",
         description: "Password must be at least 6 characters",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    // Check if email is already registered
+    if (isEmailRegistered(formData.email)) {
+      toast({
+        title: "Email Already Registered",
+        description: "This email is already in use. Please login instead.",
         variant: "destructive",
       });
       setIsLoading(false);

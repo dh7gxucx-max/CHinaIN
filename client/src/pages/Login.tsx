@@ -7,6 +7,7 @@ import { Package, Mail, Lock, LogIn } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { validateLogin } from "@/lib/demoAccounts";
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -19,53 +20,50 @@ export default function Login() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate login process
+    // Validate login credentials
     setTimeout(() => {
       if (email && password) {
-        // Save demo user data to localStorage
-        const existingUser = localStorage.getItem('demoUser');
-        let demoUser;
+        // Check against demo accounts
+        const validAccount = validateLogin(email, password);
 
-        if (existingUser) {
-          // User exists, load their data
-          try {
-            demoUser = JSON.parse(existingUser);
-          } catch (e) {
-            // If parsing fails, create new user
-            demoUser = {
-              firstName: email.split('@')[0],
-              email: email,
-              id: `user-${Date.now()}`,
-            };
-          }
-        } else {
-          // New user, create account
-          demoUser = {
-            firstName: email.split('@')[0],
-            email: email,
-            id: `user-${Date.now()}`,
+        if (validAccount) {
+          // Valid credentials - save to localStorage
+          const demoUser = {
+            firstName: validAccount.firstName,
+            lastName: validAccount.lastName,
+            email: validAccount.email,
+            phone: validAccount.phone,
+            id: validAccount.id,
           };
-        }
 
-        localStorage.setItem('demoUser', JSON.stringify(demoUser));
+          localStorage.setItem('demoUser', JSON.stringify(demoUser));
 
-        toast({
-          title: "Login Successful!",
-          description: `Welcome back, ${demoUser.firstName}!`,
-        });
-        // First trigger mock login, then redirect to dashboard
-        fetch("/api/login", { method: "GET" })
-          .then(() => {
-            setTimeout(() => {
-              setLocation("/dashboard");
-            }, 500);
-          })
-          .catch(() => {
-            // Fallback: redirect to dashboard anyway
-            setTimeout(() => {
-              setLocation("/dashboard");
-            }, 500);
+          toast({
+            title: "Login Successful!",
+            description: `Welcome back, ${demoUser.firstName}!`,
           });
+
+          // Redirect to dashboard
+          fetch("/api/login", { method: "GET" })
+            .then(() => {
+              setTimeout(() => {
+                setLocation("/dashboard");
+              }, 500);
+            })
+            .catch(() => {
+              setTimeout(() => {
+                setLocation("/dashboard");
+              }, 500);
+            });
+        } else {
+          // Invalid credentials
+          toast({
+            title: "Login Failed",
+            description: "Invalid email or password. Please try again.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+        }
       } else {
         toast({
           title: "Error",
@@ -222,6 +220,42 @@ export default function Login() {
             </Link>
           </p>
         </div>
+
+        {/* Demo Accounts Info */}
+        <Card className="mt-8 border-accent/30 bg-accent/5">
+          <CardContent className="pt-6">
+            <div className="text-center mb-4">
+              <p className="text-sm font-semibold text-primary mb-2">
+                🎯 Demo Accounts for Testing
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Use one of these accounts to try the platform
+              </p>
+            </div>
+            <div className="space-y-3 text-xs">
+              <div className="bg-background p-3 rounded-lg border">
+                <p className="font-mono">
+                  <span className="text-muted-foreground">Email:</span>{" "}
+                  <span className="font-semibold">demo@china2india.com</span>
+                </p>
+                <p className="font-mono">
+                  <span className="text-muted-foreground">Password:</span>{" "}
+                  <span className="font-semibold">demo123</span>
+                </p>
+              </div>
+              <div className="bg-background p-3 rounded-lg border">
+                <p className="font-mono">
+                  <span className="text-muted-foreground">Email:</span>{" "}
+                  <span className="font-semibold">test@example.com</span>
+                </p>
+                <p className="font-mono">
+                  <span className="text-muted-foreground">Password:</span>{" "}
+                  <span className="font-semibold">test123</span>
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
     </div>
   );
