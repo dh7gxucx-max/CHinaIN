@@ -11,6 +11,7 @@ export default function Pricing() {
       name: "Air Cargo Express",
       time: "5-7 days",
       price: "$18/kg",
+      method: "air-express",
       features: [
         "Fastest delivery option",
         "Door-to-door service",
@@ -30,6 +31,7 @@ export default function Pricing() {
       name: "Air Cargo Standard",
       time: "8-12 days",
       price: "$15/kg",
+      method: "air-standard",
       features: [
         "Balance of speed and cost",
         "Door-to-door service",
@@ -49,6 +51,7 @@ export default function Pricing() {
       name: "Sea Freight (FCL/LCL)",
       time: "25-35 days",
       price: "$8/kg",
+      method: "sea-freight",
       features: [
         "Most economical option",
         "Suitable for heavy cargo",
@@ -68,6 +71,7 @@ export default function Pricing() {
       name: "Land + Sea Express",
       time: "18-22 days",
       price: "$12/kg",
+      method: "land-sea",
       features: [
         "Good balance option",
         "Land transport to port",
@@ -227,7 +231,7 @@ export default function Pricing() {
                         </div>
                       ))}
                     </div>
-                    <Link href="/calculator">
+                    <Link href={`/calculator?method=${method.method}`}>
                       <Button className="w-full" variant={method.recommended ? "default" : "outline"}>
                         Calculate Cost
                       </Button>

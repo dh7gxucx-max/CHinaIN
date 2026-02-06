@@ -1,22 +1,49 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Calculator as CalcIcon, Package, DollarSign } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLocation } from "wouter";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const shippingRates = {
+  "air-express": { name: "Air Cargo Express", price: 18, time: "5-7 days" },
+  "air-standard": { name: "Air Cargo Standard", price: 15, time: "8-12 days" },
+  "sea-freight": { name: "Sea Freight (FCL/LCL)", price: 8, time: "25-35 days" },
+  "land-sea": { name: "Land + Sea Express", price: 12, time: "18-22 days" },
+};
 
 export default function Calculator() {
+  const [location] = useLocation();
   const [weight, setWeight] = useState<string>("");
   const [result, setResult] = useState<number | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<string>("air-standard");
 
-  const PRICE_PER_KG = 15; // $15 per kg
+  // Get shipping method from URL parameter
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const method = params.get('method');
+    if (method && shippingRates[method as keyof typeof shippingRates]) {
+      setSelectedMethod(method);
+    }
+  }, [location]);
+
+  const MIN_WEIGHT = 1.5; // Minimum 1.5 kg
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
     const w = parseFloat(weight);
-    if (!isNaN(w) && w > 0) {
-      setResult(w * PRICE_PER_KG);
+    if (!isNaN(w) && w >= MIN_WEIGHT) {
+      const rate = shippingRates[selectedMethod as keyof typeof shippingRates];
+      setResult(w * rate.price);
     }
   };
 
@@ -36,7 +63,7 @@ export default function Calculator() {
             Shipping Cost Calculator
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Calculate your shipping costs from China to India. Simple, transparent pricing at $15 per kilogram.
+            Calculate your shipping costs from China to India. Simple, transparent pricing.
           </p>
         </motion.div>
 
@@ -55,6 +82,24 @@ export default function Calculator() {
             <CardContent>
               <form onSubmit={handleCalculate} className="space-y-8">
                 <div className="space-y-4">
+                  <Label htmlFor="method" className="text-lg font-semibold">
+                    Shipping Method
+                  </Label>
+                  <Select value={selectedMethod} onValueChange={setSelectedMethod}>
+                    <SelectTrigger className="h-14 text-lg">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(shippingRates).map(([key, rate]) => (
+                        <SelectItem key={key} value={key} className="text-base">
+                          {rate.name} - ${rate.price}/kg ({rate.time})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-4">
                   <Label htmlFor="weight" className="text-lg font-semibold">
                     Package Weight (kg)
                   </Label>
@@ -63,7 +108,7 @@ export default function Calculator() {
                       id="weight"
                       type="number"
                       step="0.1"
-                      min="0.1"
+                      min={MIN_WEIGHT}
                       placeholder="Enter weight in kilograms"
                       value={weight}
                       onChange={(e) => setWeight(e.target.value)}
@@ -74,7 +119,7 @@ export default function Calculator() {
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground text-center">
-                    Minimum weight: 0.1 kg
+                    Minimum weight: {MIN_WEIGHT} kg
                   </p>
                 </div>
 
@@ -106,7 +151,10 @@ export default function Calculator() {
                       ${result.toFixed(2)}
                     </div>
                     <div className="text-sm opacity-75">
-                      for {parseFloat(weight).toFixed(2)} kg @ $15/kg
+                      for {parseFloat(weight).toFixed(2)} kg @ ${shippingRates[selectedMethod as keyof typeof shippingRates].price}/kg
+                    </div>
+                    <div className="text-xs opacity-60 mt-2">
+                      {shippingRates[selectedMethod as keyof typeof shippingRates].name} • {shippingRates[selectedMethod as keyof typeof shippingRates].time}
                     </div>
                   </div>
 
@@ -122,8 +170,16 @@ export default function Calculator() {
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Method:</span>
+                        <span className="font-mono font-semibold text-xs">
+                          {shippingRates[selectedMethod as keyof typeof shippingRates].name}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
                         <span className="text-muted-foreground">Rate:</span>
-                        <span className="font-mono font-semibold">$15.00/kg</span>
+                        <span className="font-mono font-semibold">
+                          ${shippingRates[selectedMethod as keyof typeof shippingRates].price}.00/kg
+                        </span>
                       </div>
                       <div className="pt-3 border-t border-border flex justify-between items-center">
                         <span className="font-bold text-primary">Total:</span>
